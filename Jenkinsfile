@@ -11,7 +11,11 @@ pipeline {
     }
 
     stages {
-
+        stage("Package") {
+            steps {
+                
+            }
+        }
     }
 
     post {
