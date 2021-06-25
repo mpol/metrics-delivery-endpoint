@@ -10,6 +10,30 @@ pipeline {
         timeout time: 60, unit: "MINUTES"
     }
 
+    stages {
+        stage("Package") {
+            steps {
+                withEnv(["JAVA_HOME=${ tool type: 'jdk', name: "$JDK_VERSION" }",
+                         "PATH+MAVEN=${tool type: 'maven', name: "$MAVEN_VERSION"}/bin:${env.JAVA_HOME}/bin"]) {
+                    withSonarQubeEnv('sonar.ceon.pl') {
+                        //NOTE: sonar scan is only done for master branch because current Sonar instance does not support branching
+                        sh '''
+                            if [ $GIT_BRANCH = "master" ]; then
+                                mvn clean package \
+                                    -Djava.net.preferIPv4Stack=true \
+                                    $SONAR_MAVEN_GOAL \
+                                    -Dsonar.host.url=$SONAR_HOST_URL
+                            else
+                                mvn clean package \
+                                    -Djava.net.preferIPv4Stack=true
+                            fi
+                        '''
+                    }
+                }
+            }
+        }
+    }
+
     post {
         always {
             warnings canComputeNew: false, canResolveRelativePaths: false, categoriesPattern: '', consoleParsers: [[parserName: 'Maven'], [parserName: 'Java Compiler (javac)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''
