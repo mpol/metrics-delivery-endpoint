@@ -21,4 +21,21 @@ pipeline {
             }
         }
     }
+
+    post {
+        always {
+            warnings canComputeNew: false, canResolveRelativePaths: false, categoriesPattern: '', consoleParsers: [[parserName: 'Maven'], [parserName: 'Java Compiler (javac)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''
+            junit "**/target/surefire-reports/*.xml"
+            jacoco()
+            cleanWs()
+        }
+
+        failure {
+            emailext (
+                subject: "Build failed in Jenkins: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: "Failed job '${env.JOB_NAME}' #${env.BUILD_NUMBER}: check console output at ${env.BUILD_URL}.",
+                recipientProviders:  [developers()]
+            )
+        }
+    }
 }
