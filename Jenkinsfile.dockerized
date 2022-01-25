@@ -25,7 +25,7 @@ pipeline {
     post {
         always {
 //            warnings canComputeNew: false, canResolveRelativePaths: false, categoriesPattern: '', consoleParsers: [[parserName: 'Maven'], [parserName: 'Java Compiler (javac)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''
-            junit "**/target/surefire-reports/*.xml"
+//            junit "**/target/surefire-reports/*.xml"
             jacoco()
             cleanWs()
         }
