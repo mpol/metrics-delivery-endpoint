@@ -8,7 +8,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public interface PrometheusRest {
+public interfaces PrometheusRest {
     @GET("api/v1/query")
     Call<VectorResponse> query(
         @Query("query") String query,
