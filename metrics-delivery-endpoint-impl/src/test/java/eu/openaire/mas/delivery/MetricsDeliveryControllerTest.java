@@ -3,6 +3,7 @@ package eu.openaire.mas.delivery;
 import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
@@ -51,6 +52,7 @@ public class MetricsDeliveryControllerTest {
         assertEquals(familyId, result.getResourceId());
         assertEquals(name, result.getMetricId());
         assertEquals(value, result.getValue());
+	assertTrue(false);
     }
 
     @Test

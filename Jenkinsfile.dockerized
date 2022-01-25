@@ -38,6 +38,14 @@ pipeline {
 //            cleanWs()
 //        }
 
+        unstable {
+            emailext (
+                subject: "Build unstable in Jenkins: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: "Unstable job '${env.JOB_NAME}' #${env.BUILD_NUMBER}: check console output at ${env.BUILD_URL}.",
+                recipientProviders:  [developers()]
+            )
+        }
+
         failure {
             emailext (
                 subject: "Build failed in Jenkins: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
