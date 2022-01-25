@@ -17,14 +17,13 @@ pipeline {
             steps {
 		sh 'printenv'
 		sh "ls -l /usr/local/bin"
-		unstable "synthetic unstable"
-//                sh "mvn install"
+		sh "mvn install -Dmaven.test.failure.ignore"
             }
 	    post {
 		always {
 //		    warnings canComputeNew: false, canResolveRelativePaths: false, categoriesPattern: '', consoleParsers: [[parserName: 'Maven'], [parserName: 'Java Compiler (javac)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''
-//		    junit "**/target/surefire-reports/*.xml"
-//		    jacoco()
+		    junit "**/target/surefire-reports/*.xml"
+		    jacoco()
 		    cleanWs()
 		}
 	    }
