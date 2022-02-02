@@ -2,6 +2,7 @@ pipeline {
     agent none
     environment {
 	SONAR_TOKEN=credentials('SONAR_TOKEN')
+	ARTIFACTORY_DEPLOY=credentials('artifactory-deploy')
     }
     stages {
 	// stage('Test docker') {
@@ -21,7 +22,7 @@ pipeline {
 		sh 'printenv'
 		sh "ls -l /usr/local/bin"
 //		sh 'mvn -B install sonar:sonar -Dmaven.test.failure.ignore -Dsonar.host.url=http://sonar.ceon.pl -Dsonar.login=${SONAR_TOKEN}'
-		sh 'mvn -B deploy -Dmaven.test.failure.ignore'
+		sh 'mvn -B deploy -s deploy-settings.xml -Dmaven.test.failure.ignore'
             }
 	    post {
 		always {
