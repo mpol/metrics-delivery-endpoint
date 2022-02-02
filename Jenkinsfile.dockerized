@@ -17,7 +17,7 @@ pipeline {
             steps {
 		sh 'printenv'
 		sh "ls -l /usr/local/bin"
-		sh "mvn install -Dmaven.test.failure.ignore"
+		sh "mvn install sonar:sonar -Dmaven.test.failure.ignore"
             }
 	    post {
 		always {
