@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+    agent any
     environment {
 	SONAR_TOKEN=credentials('sonar-token')
 	ARTIFACTORY_DEPLOY=credentials('artifactory-deploy')
@@ -9,6 +9,7 @@ pipeline {
             agent {
                 docker {
                     image "maven:3-jdk-8"
+		    reuseNode true
                 }
             }
             steps {
@@ -26,6 +27,7 @@ pipeline {
             agent {
                 docker {
                     image "maven:3-jdk-8"
+		    reuseNode true
                 }
             }
 	    //NOTE: sonar scan is only done for master branch because current Sonar instance does not support branching
