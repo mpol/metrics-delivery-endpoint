@@ -1,17 +1,10 @@
 pipeline {
     agent none
     environment {
-	SONAR_TOKEN=credentials('SONAR_TOKEN')
+	SONAR_TOKEN=credentials('sonar-token')
 	ARTIFACTORY_DEPLOY=credentials('artifactory-deploy')
     }
     stages {
-	// stage('Test docker') {
-	//     agent any
-	//     steps {
-	// 	sh 'printenv'
-	// 	sh 'ls -l /usr/local/bin'
-	//     }
-	// }
         stage('Build') {
             agent {
                 docker {
@@ -19,30 +12,31 @@ pipeline {
                 }
             }
             steps {
-		sh 'printenv'
-		sh "ls -l /usr/local/bin"
-//		sh 'mvn -B install sonar:sonar -Dmaven.test.failure.ignore -Dsonar.host.url=http://sonar.ceon.pl -Dsonar.login=${SONAR_TOKEN}'
-		sh 'mvn -B deploy -s deploy-settings.xml -Dmaven.test.failure.ignore'
+		sh 'mvn -B clean deploy -s deploy-settings.xml -Dmaven.test.failure.ignore'
             }
 	    post {
 		always {
-//		    warnings canComputeNew: false, canResolveRelativePaths: false, categoriesPattern: '', consoleParsers: [[parserName: 'Maven'], [parserName: 'Java Compiler (javac)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''
+		    recordIssues(tools: [mavenConsole(), java()])
 		    junit "**/target/surefire-reports/*.xml"
 		    jacoco()
-		    cleanWs()
 		}
 	    }
+        }
+        stage('Sonar') {
+            agent {
+                docker {
+                    image "maven:3-jdk-8"
+                }
+            }
+	    //NOTE: sonar scan is only done for master branch because current Sonar instance does not support branching
+	    when { branch 'master' }
+            steps {
+		sh 'mvn -B sonar:sonar -Dsonar.host.url=http://sonar.ceon.pl -Dsonar.login=${SONAR_TOKEN}'
+            }
         }
     }
 
     post {
-//        always {
-//            warnings canComputeNew: false, canResolveRelativePaths: false, categoriesPattern: '', consoleParsers: [[parserName: 'Maven'], [parserName: 'Java Compiler (javac)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''
-//            junit "**/target/surefire-reports/*.xml"
-//            jacoco()
-//            cleanWs()
-//        }
-
         unstable {
             emailext (
                 subject: "Build unstable in Jenkins: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
