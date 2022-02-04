@@ -52,7 +52,6 @@ public class MetricsDeliveryControllerTest {
         assertEquals(familyId, result.getResourceId());
         assertEquals(name, result.getMetricId());
         assertEquals(value, result.getValue());
-	assertTrue(false);
     }
 
     @Test
