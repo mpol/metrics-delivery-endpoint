@@ -1,5 +1,16 @@
 pipeline {
     agent any
+
+    triggers {
+        cron('H H(20-23) * * 1-5')
+	pollSCM('H * * * 1-5')
+    }
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '5'))
+        timeout time: 60, unit: 'MINUTES'
+    }
+
     environment {
 	SONAR_TOKEN=credentials('sonar-token')
 	ARTIFACTORY_DEPLOY=credentials('artifactory-deploy')
