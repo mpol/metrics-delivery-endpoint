@@ -29,7 +29,7 @@ pipeline {
                 }
             }
 	    //NOTE: sonar scan is only done for master branch because current Sonar instance does not support branching
-	    when { branch 'master' }
+	    when { branch 'mpol_docker_jenkins' }
             steps {
 		sh 'mvn -B sonar:sonar -Dsonar.host.url=http://sonar.ceon.pl -Dsonar.login=${SONAR_TOKEN}'
             }
